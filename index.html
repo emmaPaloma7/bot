@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<title>Chat avec le Bot</title>
+</head>
+<body>
+<h1>Chat avec le Bot</h1>
+<input type="text" id="messageInput" placeholder="Tapez votre message" />
+<button onclick="envoyerMessage()">Envoyer</button>
+<div id="response"></div>
+
+<script>
+async function envoyerMessage() {
+  const input = document.getElementById('messageInput');
+  const message = input.value;
+
+  // Changez cette URL par l'URL fournie par Render après déploiement
+  const url = 'https://votre-url-render.com/bot';
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: message }),
+  });
+  const data = await response.json();
+  document.getElementById('response').innerText = data.reply;
+}
+</script>
+</body>
+</html>
