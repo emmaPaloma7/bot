@@ -2,29 +2,39 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Chat avec le Bot</title>
 </head>
 <body>
 <h1>Chat avec le Bot</h1>
-<input type="text" id="messageInput" placeholder="Tapez votre message" />
-<button onclick="envoyerMessage()">Envoyer</button>
-<div id="response"></div>
+<input type="text" id="messageInput" placeholder="Tapez votre message..." />
+<button onclick="sendMessage()">Envoyer</button>
+<p id="response"></p>
 
 <script>
-async function envoyerMessage() {
-  const input = document.getElementById('messageInput');
-  const message = input.value;
+async function sendMessage() {
+  const message = document.getElementById('messageInput').value;
+  const responseElement = document.getElementById('response');
 
-  // Changez cette URL par l'URL fournie par Render après déploiement
-  const url = 'https://bot-tqxa.onrender.com';
+  try {
+    const response = await fetch('https://bot-tqxa.onrender.com/bot', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ message })
+    });
 
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: message }),
-  });
-  const data = await response.json();
-  document.getElementById('response').innerText = data.reply;
+    if (!response.ok) {
+      throw new Error(`Erreur : ${response.status}`);
+    }
+
+    const data = await response.json();
+    responseElement.innerText = data.reply;
+  } catch (error) {
+    responseElement.innerText = 'Erreur lors de la communication avec le serveur.';
+    console.error(error);
+  }
 }
 </script>
 </body>
